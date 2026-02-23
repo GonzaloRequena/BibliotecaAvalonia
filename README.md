@@ -1,5 +1,5 @@
 Proyecto de gestión de una biblioteca.
 Programado con C#.
-Interfazo con Avalonia
+Interfaz con Avalonia
 
 Hecho por Gonzalo Requena Eslava
