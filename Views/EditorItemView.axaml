@@ -1,0 +1,73 @@
+﻿<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="using:BibliotecaAvalonia.ViewModels"
+        x:Class="BibliotecaAvalonia.Views.EditorItemView"
+        x:DataType="vm:EditorItemViewModel"
+        x:CompileBindings="False"
+        Title="{Binding TituloVentana}"
+        Width="650" Height="500"
+        WindowStartupLocation="CenterOwner"
+        CanResize="False"
+        Icon="avares://BibliotecaAvalonia/Assets/Images/biblioteca-logo.ico">
+        
+    <Border Padding="20" Background="#FDFDFD">
+        <StackPanel Spacing="15">
+            <TextBlock Text="{Binding TituloVentana}" 
+                       FontSize="20" FontWeight="Bold" Foreground="#2C3E50"/>
+            
+            <Separator Height="1" Background="#ECF0F1"/>
+
+            <StackPanel Spacing="5">
+                <Label Content="Título del artículo:" FontSize="12" Foreground="Gray"/>
+                <TextBox Text="{Binding Titulo}" PlaceholderText="Ej: El Quijote"/>
+            </StackPanel>
+
+            <Grid ColumnDefinitions="*,*">
+                <StackPanel Grid.Column="0" Spacing="5" Margin="0,0,5,0">
+                    <Label Content="Año de publicación:" FontSize="12" Foreground="Gray"/>
+                    <NumericUpDown Value="{Binding Anio}" Minimum="1500" Maximum="2100" />
+                </StackPanel>
+                <StackPanel Grid.Column="1" Spacing="5" Margin="5,0,0,0">
+                    <Label Content="Fecha adquisición:" FontSize="12" Foreground="Gray"/>
+                    <DatePicker SelectedDate="{Binding FechaAdquisicion}" />
+                </StackPanel>
+            </Grid>
+
+            <StackPanel Spacing="15" IsVisible="{Binding EsLibro}">
+                <StackPanel Spacing="5">
+                    <Label Content="ISBN-10:" FontSize="12" Foreground="Gray"/>
+                    <TextBox Text="{Binding Isbn10}" PlaceholderText="Ej: 843760494X"/>
+                </StackPanel>
+                <CheckBox Content="Disponible para préstamo" IsChecked="{Binding EstaDisponible}"/>
+            </StackPanel>
+
+            <StackPanel Spacing="15" IsVisible="{Binding !EsLibro}">
+                <Label Content="Rango de disponibilidad:" FontSize="12" />
+                <Grid ColumnDefinitions="*,*">
+                    <StackPanel Grid.Column="0" Margin="0,0,10,0">
+                        <Label Content="Desde:" FontSize="11"/>
+                        <DatePicker SelectedDate="{Binding InicioDisponibilidad}"/>
+                    </StackPanel>
+                    <StackPanel Grid.Column="1">
+                        <Label Content="Hasta:" FontSize="11"/>
+                        <DatePicker SelectedDate="{Binding FinDisponibilidad}"/>
+                    </StackPanel>
+                </Grid>
+            </StackPanel>
+
+            <TextBlock Text="{Binding MensajeError}" 
+                       Foreground="Red" 
+                       FontSize="12" 
+                       TextWrapping="Wrap"
+                       IsVisible="{Binding MensajeError, Converter={x:Static ObjectConverters.IsNotNull}}"
+                       Margin="0,10,0,0"/>
+            
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Spacing="10" Margin="0,20,0,0">
+                <Button Content="Cancelar" Click="Cancelar_Click" />
+                <Button Content="Guardar" 
+                        Command="{Binding GuardarCommand}" 
+                        Classes="accent" />
+            </StackPanel>
+        </StackPanel>
+    </Border>
+</Window>

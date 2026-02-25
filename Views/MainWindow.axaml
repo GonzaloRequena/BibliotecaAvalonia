@@ -1,0 +1,195 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="using:BibliotecaAvalonia.ViewModels"
+        xmlns:models="using:BibliotecaAvalonia.Models"
+        x:Class="BibliotecaAvalonia.Views.MainWindow"
+        x:DataType="vm:MainWindowViewModel"
+        x:CompileBindings="True"
+        Title="Gestión de Biblioteca"
+        Width="1200" Height="650"
+        WindowStartupLocation="CenterScreen"
+        Icon="avares://BibliotecaAvalonia/Assets/Images/biblioteca-logo.ico">
+
+    <Design.DataContext>
+        <vm:MainWindowViewModel/>
+    </Design.DataContext>
+
+    <DockPanel Margin="20">
+        <Border DockPanel.Dock="Top" Background="#f0f0f0" CornerRadius="8" Padding="15" Margin="0,0,0,20">
+            <StackPanel Spacing="15" Orientation="Horizontal">
+                
+                <TextBox x:CompileBindings="False"
+                         Width="250" 
+                         Text="{Binding TextoBusqueda}" 
+                         PlaceholderText="Buscar por título..." 
+                         VerticalContentAlignment="Center"/>
+
+                <ComboBox Width="130"
+                          ItemsSource="{CompiledBinding TiposFiltro}"
+                          SelectedItem="{CompiledBinding TipoSeleccionado}"
+                          VerticalAlignment="Center"/>
+
+                <Button Content="Buscar" 
+                        Command="{CompiledBinding BuscarCommand}" 
+                        HotKey="Enter"
+                        Classes="accent" />
+                
+                <Separator Background="Gray" Width="1" Height="20" Margin="10,0"/>
+                
+                <Button Content="➕ Nuevo Libro" 
+                        Command="{CompiledBinding NuevoLibroCommand}" />
+                
+                <Button Content="🎧 Nuevo Audiolibro" 
+                        Command="{CompiledBinding NuevoAudiolibroCommand}" />
+            </StackPanel>
+        </Border>
+
+        <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" Spacing="10" Margin="0,20,0,0">
+            
+            <Button Content="🔄 Prestar/Devolver" 
+                    Command="{CompiledBinding CambiarEstadoPrestamoCommand}"
+                    x:CompileBindings="False"
+                    IsEnabled="{Binding ArticuloSeleccionado, Converter={x:Static ObjectConverters.IsNotNull}}"
+                    Background="#FF9800" Foreground="White"/>
+            
+            <Button Content="Valorar" 
+                    Command="{CompiledBinding AñadirValoracionCommand}"
+                    x:CompileBindings="False"
+                    IsEnabled="{Binding ArticuloSeleccionado, Converter={x:Static ObjectConverters.IsNotNull}}"
+                    Background="#F1C40F" Foreground="Black" 
+                    Margin="5,0"/>
+            
+            <Button Content="Editar" 
+                    Command="{CompiledBinding EditarCommand}"
+                    x:CompileBindings="False"
+                    IsEnabled="{Binding ArticuloSeleccionado, Converter={x:Static ObjectConverters.IsNotNull}}" />
+            
+            <Button Content="Eliminar" 
+                    Command="{CompiledBinding EliminarCommand}"
+                    Background="Firebrick" Foreground="White"
+                    x:CompileBindings="False"
+                    IsEnabled="{Binding ArticuloSeleccionado, Converter={x:Static ObjectConverters.IsNotNull}}" />
+            
+            <TextBlock x:CompileBindings="False"
+                       Text="{Binding Articulos.Count, StringFormat='Total: {0} artículos'}" 
+                       VerticalAlignment="Center" 
+                       Margin="20,0,0,0" 
+                       FontWeight="SemiBold"/>
+            
+            <Separator Background="Gray" Width="1" Height="20" Margin="10,0"/>
+
+            <Button Content="📥 Importar" 
+                    Command="{CompiledBinding ImportarCSVCommand}"
+                    Background="#7F8C8D" Foreground="White" />
+
+            <Button Content="📤 Exportar" 
+                    Command="{CompiledBinding ExportarCSVCommand}"
+                    Background="#7F8C8D" Foreground="White" />
+        </StackPanel>
+
+        <Grid ColumnDefinitions="*, 350">
+            
+            <DataGrid ItemsSource="{CompiledBinding Articulos}"
+                      SelectedItem="{CompiledBinding ArticuloSeleccionado}"
+                      AutoGenerateColumns="False"
+                      IsReadOnly="True"
+                      GridLinesVisibility="All"
+                      BorderThickness="1" 
+                      BorderBrush="#DDDDDD"
+                      Background="White">
+            
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="ID" 
+                                        Binding="{CompiledBinding Id}" 
+                                        x:DataType="models:Articulo" 
+                                        Width="60" />
+                    
+                    <DataGridTextColumn Header="Título" 
+                                        Binding="{CompiledBinding Titulo}" 
+                                        x:DataType="models:Articulo" 
+                                        Width="*" />
+                    
+                    <DataGridTextColumn Header="Año" 
+                                        Binding="{CompiledBinding Anio}" 
+                                        x:DataType="models:Articulo" 
+                                        Width="80" />
+                    
+                    <DataGridTextColumn Header="Fecha adquisición" 
+                                        Binding="{CompiledBinding FechaAdquisicion, StringFormat=\{0:dd/MM/yyyy\}}" 
+                                        x:DataType="models:Articulo" 
+                                        Width="150" />
+
+                    <DataGridTemplateColumn Header="Estado" Width="120">
+                        <DataTemplate x:DataType="models:Articulo">
+                            <Panel Margin="5">
+                                <StackPanel x:CompileBindings="False"
+                                            IsVisible="{Binding Tipo, Converter={x:Static ObjectConverters.Equal}, ConverterParameter='Libro'}">
+                                    <TextBlock Text="Disponible" Foreground="Green" HorizontalAlignment="Center"
+                                               IsVisible="{Binding Disponible}"/>
+                                    <TextBlock Text="Prestado" Foreground="Red" HorizontalAlignment="Center"
+                                               IsVisible="{Binding !Disponible}"/>
+                                </StackPanel>
+
+                                <TextBlock x:CompileBindings="False"
+                                           Text="Digital" 
+                                           Foreground="Gray" 
+                                           HorizontalAlignment="Center"
+                                           IsVisible="{Binding Tipo, Converter={x:Static ObjectConverters.Equal}, ConverterParameter='Audiolibro'}"/>
+                            </Panel>
+                        </DataTemplate>
+                    </DataGridTemplateColumn>
+                
+                    <DataGridTextColumn Header="Valoración" 
+                                        Binding="{CompiledBinding NotaMedia, StringFormat=\{0:F1\}}" 
+                                        x:DataType="models:Articulo" 
+                                        Width="auto" />
+                    
+                    <DataGridTemplateColumn Header="Tipo" Width="120">
+                        <DataTemplate x:DataType="models:Articulo">
+                            <Border Padding="5,2" 
+                                    Margin="5" 
+                                    CornerRadius="4" 
+                                    Background="#E3F2FD">
+                                <TextBlock x:CompileBindings="False"
+                                        Text="{Binding Tipo}" 
+                                        HorizontalAlignment="Center" 
+                                        FontSize="12"/>
+                            </Border>
+                        </DataTemplate>
+                    </DataGridTemplateColumn>
+                </DataGrid.Columns>
+            </DataGrid>
+            
+            <Border Grid.Column="1" Margin="15,0,0,0" Padding="15" Background="#F9F9F9" CornerRadius="8" BorderBrush="#ECF0F1" BorderThickness="1">
+                <DockPanel x:CompileBindings="False"
+                           IsVisible="{Binding ArticuloSeleccionado, Converter={x:Static ObjectConverters.IsNotNull}}">
+                    <StackPanel DockPanel.Dock="Top" Spacing="5" Margin="0,0,0,10">
+                        <TextBlock Text="Reseñas y Feedback" FontSize="18" FontWeight="Bold" Foreground="#2C3E50"/>
+                        <TextBlock Text="{Binding ArticuloSeleccionado.Titulo}" FontSize="13" Foreground="Gray" TextWrapping="Wrap"/>
+                        <Separator Height="1" Background="#ECF0F1" Margin="0,5"/>
+                    </StackPanel>
+
+                    <ScrollViewer>
+                        <ItemsControl ItemsSource="{Binding ArticuloSeleccionado.Valoraciones}">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate x:DataType="models:Valoracion">
+                                    <Border Background="White" Margin="0,0,0,10" Padding="10" CornerRadius="5" BoxShadow="0 1 3 0 #15000000">
+                                        <StackPanel Spacing="3">
+                                            <Grid ColumnDefinitions="Auto, *">
+                                                <TextBlock Grid.Column="0" Text="{Binding Puntuacion, StringFormat='⭐ {0}/10'}" FontWeight="Bold" Foreground="#F1C40F"/>
+                                                <TextBlock Grid.Column="1" Text="{Binding IdUsuario}" HorizontalAlignment="Right" FontSize="10" Foreground="Gray"/>
+                                            </Grid>
+                                            <TextBlock Text="{Binding Comentario}" FontSize="12" TextWrapping="Wrap" Margin="0,2"/>
+                                            <TextBlock Text="{Binding PalabrasClave, StringFormat='🏷️ {0}'}" FontSize="11" FontStyle="Italic" Foreground="#3498db" 
+                                                       IsVisible="{Binding PalabrasClave, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"/>
+                                        </StackPanel>
+                                    </Border>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </ScrollViewer>
+                </DockPanel>
+            </Border>
+        </Grid>
+    </DockPanel>
+</Window>

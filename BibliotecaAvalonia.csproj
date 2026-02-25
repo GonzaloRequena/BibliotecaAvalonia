@@ -20,5 +20,10 @@
         </PackageReference>
         <PackageReference Include="Avalonia.Themes.Simple" Version="12.0.0-preview1" />
         <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.0" />
+        <PackageReference Include="Microsoft.Data.Sqlite" Version="11.0.0-preview.1.26104.118" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <AvaloniaResource Include="Assets\Images\biblioteca-logo.ico" />
     </ItemGroup>
 </Project>

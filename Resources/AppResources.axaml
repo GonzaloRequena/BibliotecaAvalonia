@@ -1,0 +1,13 @@
+<ResourceDictionary xmlns="https://github.com/avaloniaui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    
+    <SolidColorBrush x:Key="ColorPrimario" Color="#2C3E50" />
+    <SolidColorBrush x:Key="ColorFondoPanel" Color="#F0F0F0" />
+    <SolidColorBrush x:Key="ColorFondoVentana" Color="#FDFDFD" />
+    <SolidColorBrush x:Key="ColorSeparador" Color="#ECF0F1" />
+    <SolidColorBrush x:Key="ColorTextoSecundario" Color="Gray" />
+    <SolidColorBrush x:Key="ColorTipoBadge" Color="#E3F2FD" />
+    <SolidColorBrush x:Key="ColorBotonPrestamo" Color="#FF9800" />
+    <SolidColorBrush x:Key="ColorBotonValorar" Color="#F1C40F" />
+    
+</ResourceDictionary>
